@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 3: Interactive Web Elements</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        (function () {
+            var stored = localStorage.getItem('decodelabs-theme');
+            var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+</head>
+<body>
+    <header class="header-unit">
+        <h1>Interactive Sandbox</h1>
+    </header>
+
+    <main class="main-layout">
+        <section class="content-block">
+            <h2>Case Study: Theme Actuator</h2>
+            <p>Click below to transition the system state between light and dark architectures.</p>
+            <button class="btn-primary js-theme-toggle" aria-label="Toggle dark mode" aria-pressed="false">
+                Light / Dark Mode
+            </button>
+        </section>
+
+        <section class="content-block">
+            <h2>State Tracker (IPO Loop)</h2>
+            <div class="counter-display">
+                Current Score: <span class="js-score-display">0</span>
+            </div>
+            <div class="action-group">
+                <button class="btn-success js-increment-btn">Increment State</button>
+                <button class="btn-danger js-reset-btn">Reset State</button>
+            </div>
+        </section>
+
+        <section class="content-block">
+            <h2>Component Mutator</h2>
+            <button class="btn-secondary js-menu-toggle" aria-expanded="false" aria-controls="slidingMenu">
+                <span class="menu-icon">≡</span> Toggle Component Menu
+            </button>
+            <div class="sliding-menu js-sliding-menu" id="slidingMenu">
+                <p>Dynamically actuated client-side module content.</p>
+            </div>
+        </section>
+
+        <section class="content-block">
+            <h2>Data Conduit: Submission Form</h2>
+            <p>Enter a payload below and commit it to the client-side pipeline.</p>
+
+            <form class="submit-form js-submit-form" novalidate>
+                <div class="field-group">
+                    <label for="payloadInput">Payload</label>
+                    <input
+                        type="text"
+                        id="payloadInput"
+                        class="js-payload-input"
+                        placeholder="e.g. system check complete"
+                        aria-describedby="payloadFeedback"
+                    >
+                </div>
+
+                <div class="action-group">
+                    <button type="submit" class="btn-primary">Submit Payload</button>
+                </div>
+
+                <p id="payloadFeedback" class="form-feedback js-form-feedback" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer-section">
+        <p>&copy; 2026.Engineering the Client-Side Nervous System.</p>
+    </footer>
+
+    <script src="app.js" defer></script>
+</body>
+</html>

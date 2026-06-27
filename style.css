@@ -1,0 +1,286 @@
+/* ================================================
+   1. RESET & THEME TOKENS
+   Light theme is the default. Dark theme overrides
+   the same variable names under [data-theme="dark"],
+   so every component below only ever references
+   variables — never hardcoded colors.
+   ================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --ink: #10151c;
+  --muted: #5b6675;
+  --border: #e1e6ec;
+
+  --accent: #0d9488;
+  --accent-ink: #ffffff;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --secondary: #334155;
+
+  --shadow: 0 1px 2px rgba(16, 21, 28, 0.04), 0 8px 24px rgba(16, 21, 28, 0.06);
+  --radius: 14px;
+
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  --max-width: 920px;
+  --gap-sm: 0.75rem;
+  --gap-md: 1.5rem;
+  --gap-lg: 2.5rem;
+
+  /* Smooth, but only for color-related properties —
+     never for layout, so theme switching can't cause jank */
+  --transition-theme: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+[data-theme="dark"] {
+  --bg: #0b0f14;
+  --surface: #131922;
+  --ink: #e7ecf2;
+  --muted: #8b96a5;
+  --border: #232b36;
+
+  --accent: #2dd4bf;
+  --accent-ink: #04201c;
+  --success: #22c55e;
+  --danger: #f87171;
+  --secondary: #94a3b8;
+
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+html { color-scheme: light dark; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  transition: var(--transition-theme);
+}
+
+h1, h2 { font-family: var(--font-mono); letter-spacing: -0.01em; }
+
+p { color: var(--muted); }
+
+/* ================================================
+   2. LAYOUT
+   ================================================ */
+.header-unit {
+  border-bottom: 1px solid var(--border);
+  padding: 1.75rem 1.5rem;
+  transition: var(--transition-theme);
+}
+
+.header-unit h1 {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  font-size: clamp(1.3rem, 3vw, 1.7rem);
+}
+
+.main-layout {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding: var(--gap-lg) 1.5rem;
+  display: grid;
+  gap: var(--gap-md);
+}
+
+.content-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--gap-md);
+  transition: var(--transition-theme);
+}
+
+.content-block h2 {
+  font-size: 1.05rem;
+  margin-bottom: 0.6rem;
+}
+
+.content-block > p {
+  margin-bottom: 1.1rem;
+  font-size: 0.95rem;
+}
+
+.footer-section {
+  text-align: center;
+  padding: var(--gap-lg) 1.5rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* ================================================
+   3. BUTTONS
+   One base class handles shape/sizing/transition;
+   color comes from a single background-color rule
+   per variant, so adding a new variant later only
+   needs one extra rule.
+   ================================================ */
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+[class^="btn-"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.3rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent-ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+[class^="btn-"]:hover { transform: translateY(-2px); }
+[class^="btn-"]:active { transform: translateY(0); opacity: 0.9; }
+[class^="btn-"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn-primary { background: var(--accent); }
+.btn-success { background: var(--success); }
+.btn-danger  { background: var(--danger); color: #fff; }
+.btn-secondary {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--ink);
+}
+.btn-secondary:hover { border-color: var(--accent); }
+
+/* ================================================
+   4. COUNTER / STATE TRACKER
+   ================================================ */
+.counter-display {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  margin-bottom: 1.1rem;
+}
+
+.js-score-display {
+  display: inline-block;
+  min-width: 2ch;
+  font-weight: 700;
+  color: var(--accent);
+  transition: transform 0.15s ease;
+}
+
+/* Brief pop whenever the score value updates —
+   triggered by toggling this class in JS */
+.js-score-display.bump {
+  transform: scale(1.25);
+}
+
+.action-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+}
+
+/* ================================================
+   5. SLIDING MENU
+   Height-based slide using grid-template-rows so the
+   transition is smooth without a hardcoded max-height.
+   ================================================ */
+.sliding-menu {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows 0.3s ease;
+  margin-top: var(--gap-sm);
+}
+
+.sliding-menu.open {
+  grid-template-rows: 1fr;
+}
+
+.sliding-menu > p {
+  min-height: 0;
+  padding: var(--gap-sm) 0;
+  font-size: 0.92rem;
+}
+
+.menu-icon {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.js-menu-toggle[aria-expanded="true"] .menu-icon {
+  transform: rotate(90deg);
+}
+
+/* ================================================
+   5b. SUBMISSION FORM
+   ================================================ */
+.submit-form { margin-top: 0.25rem; }
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: var(--gap-sm);
+}
+
+.field-group label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.field-group input {
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--ink);
+  transition: var(--transition-theme), border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field-group input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+/* Error state, toggled via JS when the payload is empty */
+.field-group input.invalid {
+  border-color: var(--danger);
+}
+
+.form-feedback {
+  margin-top: 0.9rem;
+  font-size: 0.88rem;
+  min-height: 1.3em;
+  color: var(--muted);
+}
+
+.form-feedback.success { color: var(--success); }
+.form-feedback.error { color: var(--danger); }
+
+/* ================================================
+   6. MEDIA QUERIES — responsive across phone,
+   tablet, and desktop
+   ================================================ */
+@media (max-width: 600px) {
+  .action-group { flex-direction: column; align-items: stretch; }
+  [class^="btn-"] { justify-content: center; }
+  .field-group input { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
